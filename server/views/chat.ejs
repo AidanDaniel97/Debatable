@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+   <head>
+      <title>Socket.IO chat</title>
+      <style>
+         * { margin: 0; padding: 0; box-sizing: border-box; }
+         body { font: 13px Helvetica, Arial; }
+         form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+         form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+         form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+         #messages { list-style-type: none; margin: 0; padding: 0; }
+         #messages li { padding: 5px 10px; }
+         #messages li:nth-child(odd) { background: #eee; }
+      </style>
+   </head>
+   <body>
+      <h1>This is the chat page</h1>
+      <h1>Debate name <%= debate_name %></h1>
+      <h3>Room id: <%= room_id %></h3>
+      <h4> Old socket id : <%= socket_id %>
+      <ul id="messages"></ul>
+      <form action="">
+         <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+      <script>
+         var socket = io();
+         $('form').submit(function(){
+		    socket.emit('chat message', $('#m').val());
+		    $('#m').val('');
+		    return false;
+		  });
+
+
+         socket.on("new message",function(message){
+         	console.log("sds")
+         	console.log(message)
+         })
+      </script>
+
+   </body>
+</html>

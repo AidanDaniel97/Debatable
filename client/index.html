@@ -1,0 +1,92 @@
+<html>
+	<head>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="style/style.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+ 
+
+	</head>
+	<body>
+<!--
+<nav class="navbar navbar-default">
+  <div class="container-fluid"> 
+    <div class="navbar-header">
+       
+      <a class="navbar-brand" href="#">Debateable</a>
+    </div>
+
+   
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+       
+       
+      <ul class="nav navbar-nav navbar-right">
+         
+      </ul>
+    </div> 
+  </div> 
+</nav>
+		-->
+		<div class="container-fluid header_background">
+			<div class="row">
+				<div class="jumbotron">
+				  <h1>Debateable</h1>
+				  <h2 class="lead">The realtime debating website for all your mass debate needs.</p>
+				</div>
+			</div>
+		</div>
+
+ 
+		 
+		<div class="container-fluid debate_feed">
+			<div class="row debate_row">
+				<div class="col-xs-6">
+					<div class="debate_card" data-debateName = "trump">
+						TRUMP
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="debate_card" data-debateName = "dogs vs cats">
+						dogs vs cats
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+	 
+	 
+
+
+
+
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	      <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	      <script>
+	         var socket = io();
+	         
+	      </script>
+
+
+	      <script>
+	      	$(".debate_card").click(function($this){
+	      		console.log("Clicked " , $(this).attr("data-debateName"));
+	      		socket.emit("joinQueue", $(this).attr("data-debateName"));
+
+	      	})
+
+
+	      	socket.on('redirect', function(destination) {
+			    window.location.href = destination;
+			});
+
+	      </script>
+
+
+	</body>
+</html>
