@@ -44,13 +44,17 @@
 		<div class="container-fluid debate_feed">
 			<div class="row debate_row">
 				<div class="col-xs-6">
-					<div class="debate_card" data-debateName = "trump">
+					<div class="debate_card">
 						TRUMP
+						<button class="join_debate" data-debateName = "trump">Join Debate</button>
+						<button class="spectate_debate" data-debateName = "trump">Spectate Debate</button>
 					</div>
 				</div>
 				<div class="col-xs-6">
-					<div class="debate_card" data-debateName = "dogs vs cats">
+					<div class="debate_card">
 						dogs vs cats
+						<button class="join_debate" data-debateName = "dogs vs cats">Join Debate</button>
+						<button class="spectate_debate" data-debateName = "dogs vs cats">Spectate Debate</button>
 					</div>
 				</div>
 			</div>
@@ -65,26 +69,25 @@
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-	      <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-	      <script>
-	         var socket = io();
-	         
-	      </script>
+ 
 
 
 	      <script>
-	      	$(".debate_card").click(function($this){
-	      		console.log("Clicked " , $(this).attr("data-debateName"));
-	      		socket.emit("joinQueue", $(this).attr("data-debateName"));
+	      	$(".join_debate").click(function($this){
+	      		console.log("Clicked to join debate: " , $(this).attr("data-debateName"));
+	      		var destination = '/chat/'+ $(this).attr("data-debateName") + '/join/';   
+	      		window.location.href = destination;
+
+
+	      	});
+
+	      	$(".spectate_debate").click(function($this){
+	      		console.log("Clicked to spectate debate: " , $(this).attr("data-debateName"));
+	      		var destination = '/chat/'+ $(this).attr("data-debateName") + '/spectate/';   
+	      		window.location.href = destination; 
 
 	      	})
-
-
-	      	socket.on('redirect', function(destination) {
-			    window.location.href = destination;
-			});
-
+ 
 	      </script>
 
 

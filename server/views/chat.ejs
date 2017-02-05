@@ -16,8 +16,8 @@
    <body>
       <h1>This is the chat page</h1>
       <h1>Debate name <%= debate_name %></h1>
-      <h3>Room id: <%= room_id %></h3>
-      <h4> Old socket id : <%= socket_id %>
+      <h3>Debate mode: <%= debate_mode %></h3>      
+      <h3 id="room_id_text">Room id: not in a room</h3> 
       <ul id="messages"></ul>
       <form action="">
          <input id="m" autocomplete="off" /><button>Send</button>
@@ -26,18 +26,54 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
      <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
       <script>
+
+
+         var room_id = null;
          var socket = io();
+
          $('form').submit(function(){
-		    socket.emit('chat message', $('#m').val());
+         	message_value = {"message":$('#m').val(), "room_id":room_id}
+		    socket.emit('chat message', message_value);
 		    $('#m').val('');
 		    return false;
 		  });
 
 
+
+         //Check the mode the user is in
+         if ('<%= debate_mode %>' == 'spectate'){
+         	socket.emit('spectate_debate', '<%= debate_name %>');
+         }else{
+         	socket.emit('join_debate', '<%= debate_name %>');
+         }
+
          socket.on("new message",function(message){
-         	console.log("sds")
-         	console.log(message)
-         })
+         	$('#messages').append($('<li>').text(message));
+
+      
+         });
+
+
+
+        //User has just joined this room
+		socket.on("joined_room",function(room_data){
+         	 room_id = room_data.room_id;
+         	 $('#room_id_text').html("Room id: " + room_id)
+         	 console.log(room_data);
+
+         });
+
+
+
+
+    
+ 	 socket.on('get_queue', function(msg){  
+    	console.log("Queue recieved: " , msg);
+ 	
+
+  });
+ 
+
       </script>
 
    </body>
