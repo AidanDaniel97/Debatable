@@ -12,7 +12,7 @@ var io = require('socket.io').listen(server);
  
 
 queues_holder = [];
-
+socket_list = {};
 
 //Routing
 app.set("view engine","ejs");
@@ -36,16 +36,6 @@ function randomString(length) {
     return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
 }
 
- 
-function create_room(socket,debate_name){
-	room_id = randomString(16);
-	   console.log("New room created ", room_id)
-       socket.join(room_id); 
-       console.log("User joined a new room")
-       room_data = {'debate_name':debate_name,'room_id':room_id};
-       socket.emit("joined_room",room_data)
-}
-
 
 
 function join_debate(socket,debate_name){    
@@ -64,21 +54,63 @@ function spectate_debate(socket,debate_name){
 }
 
 
+function join_debate_queue(socket,debate_name){
+	//queues_holder["trump"] = ["123","666","987"]; 
+	if (!queues_holder[debate_name]){
+		queues_holder[debate_name] = [];
+	}
+	//queues_holder.trump.push("hello")
+	queues_holder[debate_name].push(socket.id) //add socket id to list
+	console.log("User has joined debate queue ====== " + queues_holder[debate_name].length);
+
+	check_debate_queue(debate_name);
+};
+
+
+function check_debate_queue(debate_name){
+	if (queues_holder[debate_name].length >= 2){
+		 create_debate_room(debate_name);
+	}else{
+		console.log("Not enough people in the " + debate_name + " queue to start a debate.")
+	}
+};
+
+
+ 
+function create_debate_room(debate_name){
+	room_id = randomString(16);
+	console.log("New room created ", room_id);
+	//debate_queue.trump[0]
+	for (i = 0; i <= 1; i++) {//get sockets of first 2 people in queue 
+		console.log("======= + " + socket_list[0] + " + =======" )
+    	current_socket_id = queues_holder[debate_name][i];
+    	current_socket = socket_list[current_socket_id]; 
+    	current_socket.join(room_id);
+    	console.log("User joined a new room")
+    	room_data = {'debate_name':debate_name,'room_id':room_id};
+    	current_socket.emit("joined_room",room_data)
+	}
+ 
+}
+
 
 
 //Socket.io connection
 io.on('connection', function(socket){
   console.log('a user connected ' +  socket.id);
-  
- var sessionid = io.engine.id;
-  console.log("session ID " + sessionid)
+  //Add to socket list
+  socket_list[socket.id] = socket;
 
   socket.on("join_debate", function(debate_name){
   	console.log("User wanting to join debate: " , debate_name);
   	//Make this a queue script:  
   	//User reachers top of queue!!!=========
   	//create_room(socket, debate_name);//Create a room and send them to it
-  	join_debate(socket,debate_name);
+  	//join_debate(socket,debate_name);
+  	//Join debate queue
+
+  	join_debate_queue(socket, debate_name);
+
   }); 
 
 

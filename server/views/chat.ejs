@@ -56,7 +56,7 @@
 
 
         //User has just joined this room
-		socket.on("joined_room",function(room_data){
+		socket.on("joined_room",function(room_data){ 
          	 room_id = room_data.room_id;
          	 $('#room_id_text').html("Room id: " + room_id)
          	 console.log(room_data);
@@ -67,11 +67,16 @@
 
 
     
- 	 socket.on('get_queue', function(msg){  
-    	console.log("Queue recieved: " , msg);
- 	
+ 	socket.on('get_queue', function(msg){
+ 		console.log("Queue recieved: " , msg);
+    });
 
-  });
+
+    socket.on('log_data', function(data){
+ 		console.log("New data to be logged: " , data);
+    });
+ 
+ 
  
 
       </script>
