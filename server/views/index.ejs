@@ -15,7 +15,7 @@
   <div class="container-fluid"> 
     <div class="navbar-header">
        
-      <a class="navbar-brand" href="#">Debateable</a>
+      <a class="navbar-brand" href="#">Debatable</a>
     </div>
 
    
@@ -33,11 +33,13 @@
 		<div class="container-fluid header_background">
 			<div class="row">
 				<div class="jumbotron">
-				  <h1>Debateable</h1>
+				  <h1>Debatable</h1>
 				  <h2 class="lead">The realtime debating website for all your mass debate needs.</p>
 				</div>
 			</div>
 		</div>
+
+
 
  
 		 
@@ -60,6 +62,24 @@
 			</div>
 		</div>
 		 
+<br><br>
+
+
+		<div class="container-fluid debate_feed">
+			<div class="row debate_row">
+				<div class="col-xs-6">
+					<div class="debate_card">
+						<%= topic_list[0].topic_name %> - <br> 
+						<%= topic_list[0].topic_desc %>
+						<br>
+						<button class="join_debate" data-debateName = "<%= topic_list[0].topic_name_short %>">Join Debate</button>
+						<button class="spectate_debate" data-debateName = "<%= topic_list[0].topic_name_short %>">Spectate Debate</button>
+					</div>
+				</div> 
+			</div>
+		</div>
+		 
+	 
 	 
 	 
 
@@ -86,8 +106,14 @@
 	      		var destination = '/chat/'+ $(this).attr("data-debateName") + '/spectate/';   
 	      		window.location.href = destination; 
 
-	      	})
+	      	});
+
  
+ 			
+
+
+
+
 	      </script>
 
 

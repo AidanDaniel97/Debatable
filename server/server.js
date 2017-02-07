@@ -10,6 +10,10 @@ var server = app.listen(process.env.PORT || 5000,function(){
 
 var io = require('socket.io').listen(server);
  
+//Database - mongodb
+var mongodb = require("mongodb");
+
+
 
 queues_holder = [];
 socket_list = {};
@@ -20,13 +24,72 @@ app.set("view engine","ejs");
 //Respond to get req
 var path = require('path');
  
-app.use(express.static(path.join(__dirname, '../client')));
+ 
+
+
 
 app.get("/", function(req,res){
-	res.sendFile("index.html")
+	console.log("Requested Homepage")
+	var MongoClient = mongodb.MongoClient;
+	var mongoUrl = "mongodb://127.0.0.1:27017/debatable";
+
+MongoClient.connect(mongoUrl,function(err,db){
+	if(err){
+		console.log("Unable to connect to MongoDB " , err)
+	}else{
+		console.log("Connection establish with MongoDB")
+	
+		var topics = db.collection("topics");
+
+		topics.find().toArray(function(err,result){ 
+			if (err){
+				console.log("Error retrieving database collection");
+			}else if (result){ 
+			  res.render("index",{'topic_list':result});
+			}else{
+				console.log("No data found in collection");
+				 res.render("index",{'topic_list':result});
+			}
+
+			db.close();
+		});
+
+		
+	}
+
+
+})
+
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get("/chat/:debate_name/:debate_mode", function(req,res){
+	//get debate information from databse here
 	res.render("chat", {debate_name: req.params.debate_name, debate_mode:req.params.debate_mode}) //Load the view chat 
 });
 
@@ -88,9 +151,15 @@ function create_debate_room(debate_name){
     	current_socket.join(room_id);
     	console.log("User joined a new room")
     	room_data = {'debate_name':debate_name,'room_id':room_id};
-    	current_socket.emit("joined_room",room_data)
-	}
- 
+    	current_socket.emit("joined_room",room_data);
+   	}
+	//Remove these users from the queue
+ 	
+ 	queues_holder[debate_name].splice(0, 2);//remove the two 
+	console.log(queues_holder[debate_name].length + " ======= ")
+
+
+
 }
 
 
