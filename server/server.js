@@ -11,8 +11,8 @@ var server = app.listen(process.env.PORT || 5000,function(){
 var io = require('socket.io').listen(server);
  
 //Database - mongodb
-var mongodb = require("mongodb");
-
+var mongodb = require("mongodb"); 
+app.use(express.static(path.join(__dirname, '../client')));
 
 
 queues_holder = [];
@@ -63,30 +63,7 @@ MongoClient.connect(mongoUrl,function(err,db){
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 app.get("/chat/:debate_name/:debate_mode", function(req,res){
 	//get debate information from databse here
@@ -117,25 +94,42 @@ function spectate_debate(socket,debate_name){
 }
 
 
-function join_debate_queue(socket,debate_name){
+function join_debate_queue(socket,debate_name,debate_side){
 	//queues_holder["trump"] = ["123","666","987"]; 
 	if (!queues_holder[debate_name]){
 		queues_holder[debate_name] = [];
 	}
-	//queues_holder.trump.push("hello")
-	queues_holder[debate_name].push(socket.id) //add socket id to list
-	console.log("User has joined debate queue ====== " + queues_holder[debate_name].length);
 
-	check_debate_queue(debate_name);
+	if (!queues_holder[debate_name][debate_side]){
+		queues_holder[debate_name][debate_side] = [];
+	}
+	//queues_holder.trump.push("hello")
+	queues_holder[debate_name][debate_side].push(socket.id) //add socket id to list
+	console.log("User has joined debate queue ====== " + queues_holder[debate_name][debate_side].length);
+
+	check_debate_queue(debate_name,debate_side);
 };
 
 
-function check_debate_queue(debate_name){
-	if (queues_holder[debate_name].length >= 2){
-		 create_debate_room(debate_name);
+function check_debate_queue(debate_name, debate_side){
+
+	if (debate_side == "agree"){
+		if(queues_holder[debate_name]["disagree"] && queues_holder[debate_name]["disagree"].length  >= 1){
+			create_debate_room(debate_name);
+		}else{
+			console.log("Not enough people in the " + debate_name + " disagree queue to start a debate.")
+		}
 	}else{
-		console.log("Not enough people in the " + debate_name + " queue to start a debate.")
+		if(queues_holder[debate_name]["agree"] && queues_holder[debate_name]["agree"].length >= 1){
+			create_debate_room(debate_name);
+		}else{
+			console.log("Not enough people in the " + debate_name + " agree queue to start a debate.")
+		}
 	}
+
+	console.log(queues_holder[debate_name][debate_side].length , queues_holder[debate_name]["agree"].length)
+
+
 };
 
 
@@ -143,10 +137,13 @@ function check_debate_queue(debate_name){
 function create_debate_room(debate_name){
 	room_id = randomString(16);
 	console.log("New room created ", room_id);
-	//debate_queue.trump[0]
-	for (i = 0; i <= 1; i++) {//get sockets of first 2 people in queue 
-		console.log("======= + " + socket_list[0] + " + =======" )
-    	current_socket_id = queues_holder[debate_name][i];
+	//debate_queue.trump.agree[0]
+	for (i = 0; i <= 1; i++) {//get sockets of first 2 people in queue  
+    	if (i == 0){
+    		current_socket_id = queues_holder[debate_name]["disagree"][0];
+    	}else{
+    		current_socket_id = queues_holder[debate_name]["agree"][0];
+    	}
     	current_socket = socket_list[current_socket_id]; 
     	current_socket.join(room_id);
     	console.log("User joined a new room")
@@ -154,10 +151,10 @@ function create_debate_room(debate_name){
     	current_socket.emit("joined_room",room_data);
    	}
 	//Remove these users from the queue
- 	
- 	queues_holder[debate_name].splice(0, 2);//remove the two 
-	console.log(queues_holder[debate_name].length + " ======= ")
-
+ 	console.log("before: " + queues_holder[debate_name]["agree"])
+ 	queues_holder[debate_name]["agree"].splice(1);//remove the two 
+ 	queues_holder[debate_name]["disagree"].splice(1);//remove the two  
+ 	console.log("After: " + queues_holder[debate_name]["agree"])
 
 
 }
@@ -170,7 +167,9 @@ io.on('connection', function(socket){
   //Add to socket list
   socket_list[socket.id] = socket;
 
-  socket.on("join_debate", function(debate_name){
+  socket.on("join_debate", function(debate_info){
+  	var debate_name = debate_info.debate_name;
+  	var debate_side = debate_info.debate_side; 
   	console.log("User wanting to join debate: " , debate_name);
   	//Make this a queue script:  
   	//User reachers top of queue!!!=========
@@ -178,7 +177,7 @@ io.on('connection', function(socket){
   	//join_debate(socket,debate_name);
   	//Join debate queue
 
-  	join_debate_queue(socket, debate_name);
+  	join_debate_queue(socket, debate_name, debate_side);
 
   }); 
 

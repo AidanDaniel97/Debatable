@@ -43,7 +43,7 @@
 
  
 		 
-		<div class="container-fluid debate_feed">
+		<!--<div class="container-fluid debate_feed">
 			<div class="row debate_row">
 				<div class="col-xs-6">
 					<div class="debate_card">
@@ -60,7 +60,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>-->
 		 
 <br><br>
 
@@ -72,6 +72,7 @@
 						<%= topic_list[0].topic_name %> - <br> 
 						<%= topic_list[0].topic_desc %>
 						<br>
+						<img src="<%= topic_list[0].topic_image %>" width=400 height=300 />
 						<button class="join_debate" data-debateName = "<%= topic_list[0].topic_name_short %>">Join Debate</button>
 						<button class="spectate_debate" data-debateName = "<%= topic_list[0].topic_name_short %>">Spectate Debate</button>
 					</div>
