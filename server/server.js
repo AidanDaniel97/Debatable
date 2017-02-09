@@ -152,8 +152,8 @@ function create_debate_room(debate_name){
    	}
 	//Remove these users from the queue
  	console.log("before: " + queues_holder[debate_name]["agree"])
- 	queues_holder[debate_name]["agree"].splice(1);//remove the two 
- 	queues_holder[debate_name]["disagree"].splice(1);//remove the two  
+ 	queues_holder[debate_name]["agree"] = queues_holder[debate_name]["agree"].splice(1);//remove the two 
+ 	queues_holder[debate_name]["disagree"] = queues_holder[debate_name]["disagree"].splice(1);//remove the two  
  	console.log("After: " + queues_holder[debate_name]["agree"])
 
 

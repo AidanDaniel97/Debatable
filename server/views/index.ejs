@@ -64,27 +64,38 @@
 		 
 <br><br>
 
-
+		<% for(var i = 0; i < topic_list.length; i++) {%>
 		<div class="container-fluid debate_feed">
 			<div class="row debate_row">
 				<div class="col-xs-6">
 					<div class="debate_card">
-						<%= topic_list[0].topic_name %> - <br> 
-						<%= topic_list[0].topic_desc %>
+						<%= topic_list[i].topic_name %> - <br> 
+						<%= topic_list[i].topic_desc %>
 						<br>
-						<img src="<%= topic_list[0].topic_image %>" width=400 height=300 />
-						<button class="join_debate" data-debateName = "<%= topic_list[0].topic_name_short %>">Join Debate</button>
-						<button class="spectate_debate" data-debateName = "<%= topic_list[0].topic_name_short %>">Spectate Debate</button>
+						<img src="<%= topic_list[i].topic_image %>" width=400 height=300 />
+						<button class="join_debate debate_button" data-debateName = "<%= topic_list[i].topic_name_short %>">Join Debate</button>
+						<button class="spectate_debate debate_button" data-debateName = "<%= topic_list[i].topic_name_short %>">Spectate Debate</button>
 					</div>
 				</div> 
 			</div>
 		</div>
-		 
-	 
-	 
-	 
+		 <% } %>
 
 
+	 
+		 <div class="container">
+	    <div class="row">
+	        <div class="col-sm-4" style="background-color: red;height:100px"></div>
+	        <div class="col-xs-6 col-sm-4" style="background-color: red;height:100px"></div>
+	        <div class="col-xs-6 col-sm-4" style="background-color: red;height:100px"></div>
+	        <div class="col-xs-12" style="background-color: red;height:100px"></div>
+	    </div>
+	</div>
+
+
+	<br><br><br>
+	 
+	  
 
 
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -109,8 +120,7 @@
 
 	      	});
 
- 
- 			
+  
 
 
 
